@@ -1,0 +1,36 @@
+name: {{ .ResourceGroup | quote }}
+location: {{ .Region | quote }}
+properties:
+  openShiftVersion: {{ .DeployVersion | quote }}
+  authProfile:
+    identityProviders:
+    - name: Azure AD
+      provider:
+        kind: AADIdentityProvider
+        clientId: {{ .AADClientID | quote }}
+        secret: {{ .AADClientSecret | quote }}
+        tenantId: {{ .TenantID | quote }}
+{{- if ne .AADGroupAdminsID "" }}
+        customerAdminGroupId: {{ .AADGroupAdminsID | quote }}
+{{- end }}
+  networkProfile:
+    vnetCidr: 10.0.0.0/8
+    managementSubnetCidr: 10.255.255.0/24
+  masterPoolProfile:
+    vmSize: {{ if eq .RunningUnderTest "true" }}Standard_D2s_v3{{ else }}Standard_D4s_v3{{ end }}
+    subnetCidr: 10.0.0.0/24
+    apiProperties:
+      privateApiServer: {{ .PrivateAPIServer }}
+  agentPoolProfiles:
+  - name: infra
+    role: infra
+    vmSize: {{ if eq .RunningUnderTest "true" }}Standard_D2s_v3{{ else }}Standard_D4s_v3{{ end }}
+    subnetCidr: 10.0.0.0/24
+  - name: compute
+    role: compute
+    count: 1
+    vmSize: {{ if eq .RunningUnderTest "true" }}Standard_D2s_v3{{ else }}Standard_D4s_v3{{ end }}
+    subnetCidr: 10.0.0.0/24
+  monitorProfile:
+    enabled: false
+    workspaceResourceId: ""
