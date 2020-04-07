@@ -5,7 +5,6 @@ metadata:
     azure.openshift.io/sync-pod-optionally-apply: '*** GENERATED ***'
     azure.openshift.io/sync-pod-wait-for-readiness: "false"
     component: oms-agent
-    app: oms-agent
     tier: node
   name: omsagent
   namespace: openshift-azure-logging
@@ -13,7 +12,6 @@ spec:
   selector:
     matchLabels:
       component: oms-agent
-      app: oms-agent
       tier: node
   template:
     metadata:
@@ -23,7 +21,6 @@ spec:
         schema-versions: v1
       labels:
         component: oms-agent
-        app: oms-agent
         tier: node
     spec:
       affinity:
